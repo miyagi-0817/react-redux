@@ -32095,36 +32095,28 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Column = Column;
 
-var _react = _interopRequireWildcard(require("react"));
+var _react = _interopRequireDefault(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var color = _interopRequireWildcard(require("./color"));
 
 var _Card = require("./Card");
+
+var _icon = require("./icon");
 
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Column({
   title,
   cards
 }) {
   const totalCount = cards.length;
-  const [text, setText] = (0, _react.useState)('');
-  const [inputMode, setInputMode] = (0, _react.useState)(false);
-
-  const toggleInput = () => setInputMode(v => !v);
-
-  const confirmInput = () => setText('');
-
-  const cancelInput = () => setInputMode(false);
-
-  return _react.default.createElement(Container, null, _react.default.createElement(Header, null, _react.default.createElement(CountBadge, null, totalCount), _react.default.createElement(ColumnName, null, title), _react.default.createElement(AddButton, {
-    onClick: toggleInput
-  })), inputMode && _react.default.createElement(InputForm, {
-    value: text,
-    onChange: setText,
-    onConfirm: confirmInput,
-    onCancel: cancelInput
-  }), _react.default.createElement(VerticalScroll, null, cards.map(({
+  return _react.default.createElement(Container, null, _react.default.createElement(Header, null, _react.default.createElement(CountBadge, null, totalCount), _react.default.createElement(ColumnName, null, title), _react.default.createElement(AddButton, null)), _react.default.createElement(VerticalScroll, null, cards.map(({
     id,
     text
   }) => _react.default.createElement(_Card.Card, {
@@ -32132,7 +32124,62 @@ function Column({
     text: text
   }))));
 }
-},{"react":"../node_modules/react/index.js","./Card":"Card.tsx"}],"App.tsx":[function(require,module,exports) {
+
+const Container = _styledComponents.default.div`
+  display: flex;
+  flex-flow: column;
+  width: 355px;
+  height: 100%;
+  border: solid 1px ${color.Silver};
+  border-radius: 6px;
+  background-color: ${color.LightSilver};
+
+  > :not(:last-child) {
+    flex-shrink: 0;
+  }
+`;
+const Header = _styledComponents.default.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 8px;
+`;
+const CountBadge = _styledComponents.default.div`
+  margin-right: 8px;
+  border-radius: 20px;
+  padding: 2px 6px;
+  color: ${color.Black};
+  background-color: ${color.Silver};
+  font-size: 12px;
+  line-height: 1;
+`;
+const ColumnName = _styledComponents.default.div`
+  color: ${color.Black};
+  font-size: 14px;
+  font-weight: bold;
+`;
+const AddButton = _styledComponents.default.button.attrs({
+  type: 'button',
+  children: _react.default.createElement(_icon.PlusIcon, null)
+})`
+  margin-left: auto;
+  color: ${color.Black};
+
+  :hover {
+    color: ${color.Blue};
+  }
+`;
+const VerticalScroll = _styledComponents.default.div`
+  height: 100%;
+  padding: 8px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+
+  > :not(:first-child) {
+    margin-top: 8px;
+  }
+`;
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Card":"Card.tsx","./icon":"icon.tsx"}],"App.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32256,7 +32303,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52497" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54411" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
