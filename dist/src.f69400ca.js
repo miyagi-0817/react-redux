@@ -31936,9 +31936,14 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function CardFilter() {
+function CardFilter({
+  value,
+  onChange
+}) {
   return _react.default.createElement(Container, null, _react.default.createElement(SearchIcon, null), _react.default.createElement(Input, {
-    placeholder: "Filter cards"
+    placeholder: "Filter cards",
+    value: value,
+    onChange: ev => onChange === null || onChange === void 0 ? void 0 : onChange(ev.currentTarget.value)
   }));
 }
 
@@ -31989,11 +31994,16 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Header({
+  filterValue,
+  onFilterChange,
   className
 }) {
   return _react.default.createElement(Container, {
     className: className
-  }, _react.default.createElement(Logo, null, "Kanban board"), _react.default.createElement(_CardFilter.CardFilter, null));
+  }, _react.default.createElement(Logo, null, "Kanban board"), _react.default.createElement(_CardFilter.CardFilter, {
+    value: filterValue,
+    onChange: onFilterChange
+  }));
 }
 
 const Container = _styledComponents.default.div`
@@ -32392,7 +32402,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.App = App;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _styledComponents = _interopRequireDefault(require("styled-components"));
 
@@ -32402,10 +32412,18 @@ var _Column = require("./Column");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 function App() {
-  return _react.default.createElement(Container, null, _react.default.createElement(Header, null), _react.default.createElement(MainArea, null, _react.default.createElement(HorizontalScroll, null, _react.default.createElement(_Column.Column, {
+  const [filterValue, setFilterValue] = (0, _react.useState)('');
+  return _react.default.createElement(Container, null, _react.default.createElement(Header, {
+    filterValue: filterValue,
+    onFilterChange: setFilterValue
+  }), _react.default.createElement(MainArea, null, _react.default.createElement(HorizontalScroll, null, _react.default.createElement(_Column.Column, {
     title: "TODO",
-    filterValue: "  \u3092\u3000 \u308B \u3000  ",
+    filterValue: filterValue,
     cards: [{
       id: 'a',
       text: '朝食をとる🍞'
@@ -32418,6 +32436,7 @@ function App() {
     }]
   }), _react.default.createElement(_Column.Column, {
     title: "Doing",
+    filterValue: filterValue,
     cards: [{
       id: 'd',
       text: '顔を洗う👐'
@@ -32427,9 +32446,11 @@ function App() {
     }]
   }), _react.default.createElement(_Column.Column, {
     title: "Waiting",
+    filterValue: filterValue,
     cards: []
   }), _react.default.createElement(_Column.Column, {
     title: "Done",
+    filterValue: filterValue,
     cards: [{
       id: 'f',
       text: '布団から出る (:3っ)っ -=三[＿＿]'
@@ -32509,7 +32530,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53918" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51220" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
