@@ -33111,7 +33111,8 @@ Card.DropArea = DropArea;
 function Card({
   text,
   onDragStart,
-  onDragEnd
+  onDragEnd,
+  onDeleteClick
 }) {
   const [drag, setDrag] = (0, _react.useState)(false);
   return _react.default.createElement(Container, {
@@ -33131,7 +33132,9 @@ function Card({
   }, fragment) : _react.default.createElement(Link, {
     key: i,
     href: fragment
-  }, fragment)), _react.default.createElement(DeleteButton, null));
+  }, fragment)), _react.default.createElement(DeleteButton, {
+    onClick: onDeleteClick
+  }));
 }
 
 const Container = _styledComponents.default.div.attrs({
@@ -33455,7 +33458,8 @@ function Column({
   filterValue: rawFilterValue,
   cards: rawCards,
   onCardDragStart,
-  onCardDrop
+  onCardDrop,
+  onCardDeleteClick
 }) {
   var _a, _b;
 
@@ -33501,7 +33505,8 @@ function Column({
     }, _react.default.createElement(_Card.Card, {
       text: text,
       onDragStart: () => handleCardDragStart(id),
-      onDragEnd: () => setDraggingCardID(undefined)
+      onDragEnd: () => setDraggingCardID(undefined),
+      onDeleteClick: () => onCardDeleteClick === null || onCardDeleteClick === void 0 ? void 0 : onCardDeleteClick(id)
     }));
   }), _react.default.createElement(_Card.Card.DropArea, {
     style: {
@@ -33739,6 +33744,17 @@ function App() {
   }]);
   const [draggingCardID, setDraggingCardID] = (0, _react.useState)(undefined);
 
+  const deleteCard = () => {
+    const cardID = deletingCardID;
+    if (!cardID) return;
+    setDeletingCardID(undefined);
+    setColumns((0, _immer.default)(columns => {
+      const column = columns.find(col => col.cards.some(c => c.id === cardID));
+      if (!column) return;
+      column.cards = column.cards.filter(c => c.id !== cardID);
+    }));
+  };
+
   const dropCardTo = toID => {
     const fromID = draggingCardID;
     if (!fromID) return;
@@ -33762,6 +33778,7 @@ function App() {
     }));
   };
 
+  const [deletingCardID, setDeletingCardID] = (0, _react.useState)(undefined);
   return _react.default.createElement(Container, null, _react.default.createElement(Header, {
     filterValue: filterValue,
     onFilterChange: setFilterValue
@@ -33775,8 +33792,14 @@ function App() {
     filterValue: filterValue,
     cards: cards,
     onCardDragStart: cardID => setDraggingCardID(cardID),
-    onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID)
-  })))), _react.default.createElement(Overlay, null, _react.default.createElement(_DeleteDialog.DeleteDialog, null)));
+    onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID),
+    onCardDeleteClick: cardID => setDeletingCardID(cardID)
+  })))), deletingCardID && _react.default.createElement(Overlay, {
+    onClick: () => setDeletingCardID(undefined)
+  }, _react.default.createElement(_DeleteDialog.DeleteDialog, {
+    onConfirm: deleteCard,
+    onCancel: () => setDeletingCardID(undefined)
+  })));
 }
 
 const Container = _styledComponents.default.div`
@@ -33810,7 +33833,7 @@ const HorizontalScroll = _styledComponents.default.div`
   }
 `;
 const Overlay = (0, _styledComponents.default)(_Overlay2.Overlay)`
-  display: flex;  
+  display: flex;
   justify-content: center;
   align-items: center;
 `;
@@ -33856,7 +33879,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61985" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54641" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
