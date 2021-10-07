@@ -33573,7 +33573,106 @@ const VerticalScroll = _styledComponents.default.div`
     margin-top: 8px;
   }
 `;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Card":"Card.tsx","./icon":"icon.tsx","./InputForm":"InputForm.tsx"}],"App.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Card":"Card.tsx","./icon":"icon.tsx","./InputForm":"InputForm.tsx"}],"DeleteDialog.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DeleteDialog = DeleteDialog;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+var color = _interopRequireWildcard(require("./color"));
+
+var _Button = require("./Button");
+
+function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
+function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function DeleteDialog({
+  onConfirm,
+  onCancel,
+  className
+}) {
+  return _react.default.createElement(Container, {
+    className: className
+  }, _react.default.createElement(Message, null, "Are you sure to delete?"), _react.default.createElement(ButtonRow, null, _react.default.createElement(DeleteButton, {
+    onClick: onConfirm
+  }), _react.default.createElement(CancelButton, {
+    autoFocus: true,
+    onClick: onCancel
+  })));
+}
+
+const Container = _styledComponents.default.div`
+  min-width: 350px;
+  box-shadow: 0 8px 12px hsla(0, 0%, 0%, 0.2);
+  border: solid 1px ${color.Silver};
+  border-radius: 4px;
+  background-color: ${color.White};
+`;
+const Message = _styledComponents.default.div`
+  min-height: 100px;
+  padding: 16px;
+  color: ${color.Black};
+  font-size: 14px;
+  line-height: 1.7;
+`;
+const ButtonRow = _styledComponents.default.div`
+  display: flex;
+  padding: 0 16px 16px;
+
+  > :not(:first-child) {
+    margin-left: 8px;
+  }
+`;
+const DeleteButton = (0, _styledComponents.default)(_Button.DangerButton).attrs({
+  children: 'Delete'
+})``;
+const CancelButton = (0, _styledComponents.default)(_Button.Button).attrs({
+  children: 'Cancel'
+})``;
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Button":"Button.tsx"}],"Overlay.tsx":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Overlay = Overlay;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _styledComponents = _interopRequireDefault(require("styled-components"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function Overlay({
+  onClick,
+  className,
+  children
+}) {
+  return _react.default.createElement(Container, {
+    className: className,
+    onClick: ev => {
+      if (ev.target !== ev.currentTarget) return;
+      onClick === null || onClick === void 0 ? void 0 : onClick();
+    }
+  }, children);
+}
+
+const Container = _styledComponents.default.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: hsla(0, 0%, 8%, 0.4);
+`;
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js"}],"App.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33590,6 +33689,10 @@ var _immer = _interopRequireDefault(require("immer"));
 var _Header2 = require("./Header");
 
 var _Column = require("./Column");
+
+var _DeleteDialog = require("./DeleteDialog");
+
+var _Overlay2 = require("./Overlay");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33673,7 +33776,7 @@ function App() {
     cards: cards,
     onCardDragStart: cardID => setDraggingCardID(cardID),
     onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID)
-  })))));
+  })))), _react.default.createElement(Overlay, null, _react.default.createElement(_DeleteDialog.DeleteDialog, null)));
 }
 
 const Container = _styledComponents.default.div`
@@ -33706,7 +33809,12 @@ const HorizontalScroll = _styledComponents.default.div`
     content: '';
   }
 `;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","immer":"../node_modules/immer/dist/immer.esm.js","./Header":"Header.tsx","./Column":"Column.tsx"}],"index.tsx":[function(require,module,exports) {
+const Overlay = (0, _styledComponents.default)(_Overlay2.Overlay)`
+  display: flex;  
+  justify-content: center;
+  align-items: center;
+`;
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","immer":"../node_modules/immer/dist/immer.esm.js","./Header":"Header.tsx","./Column":"Column.tsx","./DeleteDialog":"DeleteDialog.tsx","./Overlay":"Overlay.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -33748,7 +33856,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57562" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61985" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
