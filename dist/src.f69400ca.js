@@ -33084,178 +33084,74 @@ const Logo = _styledComponents.default.div`
   font-size: 16px;
   font-weight: bold;
 `;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./CardFilter":"CardFilter.tsx"}],"Card.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./CardFilter":"CardFilter.tsx"}],"Column.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Card = Card;
+exports.Column = Column;
 
 var _react = _interopRequireWildcard(require("react"));
-
-var _styledComponents = _interopRequireDefault(require("styled-components"));
 
 var color = _interopRequireWildcard(require("./color"));
 
 var _icon = require("./icon");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-Card.DropArea = DropArea;
-
-function Card({
+function Column({
+  title,
+  filterValue: rawFilterValue,
+  cards: rawCards,
+  onCardDragStart,
+  onCardDrop,
+  onCardDeleteClick,
   text,
-  onDragStart,
-  onDragEnd,
-  onDeleteClick
+  onTextChange,
+  onTextConfirm,
+  onTextCancel
 }) {
-  const [drag, setDrag] = (0, _react.useState)(false);
-  return _react.default.createElement(Container, {
-    style: {
-      opacity: drag ? 0.5 : undefined
-    },
-    onDragStart: () => {
-      onDragStart === null || onDragStart === void 0 ? void 0 : onDragStart();
-      setDrag(true);
-    },
-    onDragEnd: () => {
-      onDragEnd === null || onDragEnd === void 0 ? void 0 : onDragEnd();
-      setDrag(false);
-    }
-  }, _react.default.createElement(CheckIcon, null), text === null || text === void 0 ? void 0 : text.split(/(https?:\/\/\S+)/g).map((fragment, i) => i % 2 === 0 ? _react.default.createElement(Text, {
-    key: i
-  }, fragment) : _react.default.createElement(Link, {
-    key: i,
-    href: fragment
-  }, fragment)), _react.default.createElement(DeleteButton, {
-    onClick: onDeleteClick
-  }));
+  var _a;
+
+  const filterValue = rawFilterValue === null || rawFilterValue === void 0 ? void 0 : rawFilterValue.trim();
+  const keywords = (_a = filterValue === null || filterValue === void 0 ? void 0 : filterValue.toLowerCase().split(/\s+/g)) !== null && _a !== void 0 ? _a : [];
+  const cards = rawCards.filter(({
+    text
+  }) => keywords === null || keywords === void 0 ? void 0 : keywords.every(w => text === null || text === void 0 ? void 0 : text.toLowerCase().includes(w)));
+  const totalCount = rawCards.length;
+  const [inputMode, setInputMode] = (0, _react.useState)(false);
+
+  const toggleInput = () => setInputMode(v => !v);
+
+  const confirmInput = () => {
+    onTextConfirm === null || onTextConfirm === void 0 ? void 0 : onTextConfirm();
+  };
+
+  const cancelInput = () => {
+    setInputMode(false);
+    onTextCancel === null || onTextCancel === void 0 ? void 0 : onTextCancel();
+  };
+
+  const [draggingCardID, setDraggingCardID] = (0, _react.useState)(undefined);
+
+  const handleCardDragStart = id => {
+    setDraggingCardID(id);
+    onCardDragStart === null || onCardDragStart === void 0 ? void 0 : onCardDragStart(id);
+  };
+
+  return _react.default.createElement(Container, null, _react.default.createElement(Header, null, _react.default.createElement(CountBadge, null, totalCount), _react.default.createElement(ColumnName, null, title), _react.default.createElement(AddButton, {
+    onClick: toggleInput
+  })), inputMode && _react.default.createElement(InputForm, {
+    value: text,
+    onChange: onTextChange,
+    onConfirm: confirmInput,
+    onCancel: cancelInput
+  }), "const Container = styled.div` display: flex; flex-flow: column; width: 355px; height: 100%; border: solid 1px $", color.Silver, "; border-radius: 6px; background-color: $", color.LightSilver, "; > :not(:last-child) ", flex - shrink, ": 0; } ` const Header = styled.div` display: flex; justify-content: flex-start; align-items: center; padding: 8px; ` const CountBadge = styled.div` margin-right: 8px; border-radius: 20px; padding: 2px 6px; color: $", color.Black, "; background-color: $", color.Silver, "; font-size: 12px; line-height: 1; ` const ColumnName = styled.div` color: $", color.Black, "; font-size: 14px; font-weight: bold; ` const AddButton = styled.button.attrs(", type, ": 'button', children: ", _react.default.createElement(_icon.PlusIcon, null), ", })` margin-left: auto; color: $", color.Black, "; :hover ", color, ": $", color.Blue, "; } ` const InputForm = styled(_InputForm)` padding: 8px; ` const ResultCount = styled.div` color: $", color.Black, "; font-size: 12px; text-align: center; ` const VerticalScroll = styled.div` height: 100%; padding: 8px; overflow-y: auto; flex: 1 1 auto; > :not(:first-child) ", margin - top, ": 8px; } `");
 }
-
-const Container = _styledComponents.default.div.attrs({
-  draggable: true
-})`
-  position: relative;
-  border: solid 1px ${color.Silver};
-  border-radius: 6px;
-  box-shadow: 0 1px 3px hsla(0, 0%, 7%, 0.1);
-  padding: 8px 32px;
-  background-color: ${color.White};
-  cursor: move;
-`;
-const CheckIcon = (0, _styledComponents.default)(_icon.CheckIcon)`
-  position: absolute;
-  top: 12px;
-  left: 8px;
-  color: ${color.Green};
-`;
-const DeleteButton = _styledComponents.default.button.attrs({
-  type: 'button',
-  children: _react.default.createElement(_icon.TrashIcon, null)
-})`
-  position: absolute;
-  top: 12px;
-  right: 8px;
-  font-size: 14px;
-  color: ${color.Gray};
-
-  :hover {
-    color: ${color.Red};
-  }
-`;
-const Text = _styledComponents.default.span`
-  color: ${color.Black};
-  font-size: 14px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-`;
-const Link = _styledComponents.default.a.attrs({
-  target: '_blank',
-  rel: 'noopener noreferrer'
-})`
-  color: ${color.Blue};
-  font-size: 14px;
-  line-height: 1.7;
-  white-space: pre-wrap;
-`;
-
-function DropArea({
-  disabled,
-  onDrop,
-  children,
-  className,
-  style
-}) {
-  const [isTarget, setIsTarget] = (0, _react.useState)(false);
-  const visible = !disabled && isTarget;
-  const [dragOver, onDragOver] = useDragAutoLeave();
-  return _react.default.createElement(DropAreaContainer, {
-    style: style,
-    className: className,
-    onDragOver: ev => {
-      if (disabled) return;
-      ev.preventDefault();
-      onDragOver(() => setIsTarget(false));
-    },
-    onDragEnter: () => {
-      if (disabled || dragOver.current) return;
-      setIsTarget(true);
-    },
-    onDrop: () => {
-      if (disabled) return;
-      setIsTarget(false);
-      onDrop === null || onDrop === void 0 ? void 0 : onDrop();
-    }
-  }, _react.default.createElement(DropAreaIndicator, {
-    style: {
-      height: !visible ? 0 : undefined,
-      borderWidth: !visible ? 0 : undefined
-    }
-  }), children);
-}
-/**
- * dragOver イベントが継続中かどうかのフラグを ref として返す
- *
- * timeout 経過後に自動でフラグが false になる
- *
- * @param timeout 自動でフラグを false にするまでの時間 (ms)
- */
-
-
-function useDragAutoLeave(timeout = 100) {
-  const dragOver = (0, _react.useRef)(false);
-  const timer = (0, _react.useRef)(0);
-  return [dragOver,
-  /**
-   * @param onDragLeave フラグが false になるときに呼ぶコールバック
-   */
-  onDragLeave => {
-    clearTimeout(timer.current);
-    dragOver.current = true;
-    timer.current = setTimeout(() => {
-      dragOver.current = false;
-      onDragLeave === null || onDragLeave === void 0 ? void 0 : onDragLeave();
-    }, timeout);
-  }];
-}
-
-const DropAreaContainer = _styledComponents.default.div`
-  > :not(:first-child) {
-    margin-top: 8px;
-  }
-`;
-const DropAreaIndicator = _styledComponents.default.div`
-  height: 40px;
-  border: dashed 3px ${color.Gray};
-  border-radius: 6px;
-  transition: all 50ms ease-out;
-`;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./icon":"icon.tsx"}],"Button.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./color":"color.ts","./icon":"icon.tsx"}],"Button.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33318,267 +33214,7 @@ const DangerButton = (0, _styledComponents.default)(Button)`
   }
 `;
 exports.DangerButton = DangerButton;
-},{"styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts"}],"InputForm.tsx":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InputForm = InputForm;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
-var color = _interopRequireWildcard(require("./color"));
-
-var _Button = require("./Button");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function InputForm({
-  value,
-  onChange,
-  onConfirm,
-  onCancel,
-  className
-}) {
-  const disabled = !(value === null || value === void 0 ? void 0 : value.trim());
-
-  const handleConfirm = () => {
-    if (disabled) return;
-    onConfirm === null || onConfirm === void 0 ? void 0 : onConfirm();
-  };
-
-  const ref = useAutoFitToContentHeight(value);
-  return _react.default.createElement(Container, {
-    className: className
-  }, _react.default.createElement(Input, {
-    ref: ref,
-    autoFocus: true,
-    placeholder: "Enter a note",
-    value: value,
-    onChange: ev => onChange === null || onChange === void 0 ? void 0 : onChange(ev.currentTarget.value),
-    onKeyDown: ev => {
-      if (!((ev.metaKey || ev.ctrlKey) && ev.key === 'Enter')) return;
-      handleConfirm();
-    }
-  }), _react.default.createElement(ButtonRow, null, _react.default.createElement(AddButton, {
-    disabled: disabled,
-    onClick: handleConfirm
-  }), _react.default.createElement(CancelButton, {
-    onClick: onCancel
-  })));
-} // **
-//  * テキストエリアの高さを内容に合わせて自動調整する
-//  *
-//  * @param content テキストエリアの内容
-//  *
-
-
-function useAutoFitToContentHeight(content) {
-  const ref = (0, _react.useRef)(null);
-  (0, _react.useEffect)(() => {
-    const el = ref.current;
-    if (!el) return;
-    const {
-      borderTopWidth,
-      borderBottomWidth
-    } = getComputedStyle(el);
-    el.style.height = 'auto'; // 一度 auto にしないと高さが縮まなくなる
-
-    el.style.height = `calc(${borderTopWidth}  ${el.scrollHeight}px  ${borderBottomWidth})`;
-  }, // 内容が変わるたびに高さを再計算
-  [content]);
-  return ref;
-}
-
-const Container = _styledComponents.default.div``;
-const Input = _styledComponents.default.textarea`
-  display: block;
-  width: 100%;
-  margin-bottom: 8px;
-  border: solid 1px ${color.Silver};
-  border-radius: 3px;
-  padding: 6px 8px;
-  background-color: ${color.White};
-  font-size: 14px;
-  line-height: 1.7;
-
-  :focus {
-    outline: none;
-    border-color: ${color.Blue};
-  }
-`;
-const ButtonRow = _styledComponents.default.div`
-  display: flex;
-
-  > :not(:first-child) {
-    margin-left: 8px;
-  }
-`;
-const AddButton = (0, _styledComponents.default)(_Button.ConfirmButton).attrs({
-  children: 'Add'
-})``;
-const CancelButton = (0, _styledComponents.default)(_Button.Button).attrs({
-  children: 'Cancel'
-})``;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Button":"Button.tsx"}],"Column.tsx":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Column = Column;
-
-var _react = _interopRequireWildcard(require("react"));
-
-var _styledComponents = _interopRequireDefault(require("styled-components"));
-
-var color = _interopRequireWildcard(require("./color"));
-
-var _Card = require("./Card");
-
-var _icon = require("./icon");
-
-var _InputForm2 = require("./InputForm");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
-
-function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
-
-function Column({
-  title,
-  filterValue: rawFilterValue,
-  cards: rawCards,
-  onCardDragStart,
-  onCardDrop,
-  onCardDeleteClick
-}) {
-  var _a, _b;
-
-  const filterValue = rawFilterValue === null || rawFilterValue === void 0 ? void 0 : rawFilterValue.trim();
-  const keywords = (_a = filterValue === null || filterValue === void 0 ? void 0 : filterValue.toLowerCase().split(/\s+/g)) !== null && _a !== void 0 ? _a : [];
-  const cards = rawCards.filter(({
-    text
-  }) => keywords === null || keywords === void 0 ? void 0 : keywords.every(w => text === null || text === void 0 ? void 0 : text.toLowerCase().includes(w)));
-  const totalCount = rawCards.length;
-  const [text, setText] = (0, _react.useState)('');
-  const [inputMode, setInputMode] = (0, _react.useState)(false);
-
-  const toggleInput = () => setInputMode(v => !v);
-
-  const confirmInput = () => setText('');
-
-  const cancelInput = () => setInputMode(false);
-
-  const [draggingCardID, setDraggingCardID] = (0, _react.useState)(undefined);
-
-  const handleCardDragStart = id => {
-    setDraggingCardID(id);
-    onCardDragStart === null || onCardDragStart === void 0 ? void 0 : onCardDragStart(id);
-  };
-
-  return _react.default.createElement(Container, null, _react.default.createElement(Header, null, _react.default.createElement(CountBadge, null, totalCount), _react.default.createElement(ColumnName, null, title), _react.default.createElement(AddButton, {
-    onClick: toggleInput
-  })), inputMode && _react.default.createElement(InputForm, {
-    value: text,
-    onChange: setText,
-    onConfirm: confirmInput,
-    onCancel: cancelInput
-  }), filterValue && _react.default.createElement(ResultCount, null, cards.length, " results"), _react.default.createElement(VerticalScroll, null, cards.map(({
-    id,
-    text
-  }, i) => {
-    var _a;
-
-    return _react.default.createElement(_Card.Card.DropArea, {
-      key: id,
-      disabled: draggingCardID !== undefined && (id === draggingCardID || ((_a = cards[i - 1]) === null || _a === void 0 ? void 0 : _a.id) === draggingCardID),
-      onDrop: () => onCardDrop === null || onCardDrop === void 0 ? void 0 : onCardDrop(id)
-    }, _react.default.createElement(_Card.Card, {
-      text: text,
-      onDragStart: () => handleCardDragStart(id),
-      onDragEnd: () => setDraggingCardID(undefined),
-      onDeleteClick: () => onCardDeleteClick === null || onCardDeleteClick === void 0 ? void 0 : onCardDeleteClick(id)
-    }));
-  }), _react.default.createElement(_Card.Card.DropArea, {
-    style: {
-      height: '100%'
-    },
-    disabled: draggingCardID !== undefined && ((_b = cards[cards.length - 1]) === null || _b === void 0 ? void 0 : _b.id) === draggingCardID,
-    onDrop: () => onCardDrop === null || onCardDrop === void 0 ? void 0 : onCardDrop(null)
-  })));
-}
-
-const Container = _styledComponents.default.div`
-  display: flex;
-  flex-flow: column;
-  width: 355px;
-  height: 100%;
-  border: solid 1px ${color.Silver};
-  border-radius: 6px;
-  background-color: ${color.LightSilver};
-
-  > :not(:last-child) {
-    flex-shrink: 0;
-  }
-`;
-const Header = _styledComponents.default.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 8px;
-`;
-const CountBadge = _styledComponents.default.div`
-  margin-right: 8px;
-  border-radius: 20px;
-  padding: 2px 6px;
-  color: ${color.Black};
-  background-color: ${color.Silver};
-  font-size: 12px;
-  line-height: 1;
-`;
-const ColumnName = _styledComponents.default.div`
-  color: ${color.Black};
-  font-size: 14px;
-  font-weight: bold;
-`;
-const AddButton = _styledComponents.default.button.attrs({
-  type: 'button',
-  children: _react.default.createElement(_icon.PlusIcon, null)
-})`
-  margin-left: auto;
-  color: ${color.Black};
-
-  :hover {
-    color: ${color.Blue};
-  }
-`;
-const InputForm = (0, _styledComponents.default)(_InputForm2.InputForm)`
-  padding: 8px;
-`;
-const ResultCount = _styledComponents.default.div`
-  color: ${color.Black};
-  font-size: 12px;
-  text-align: center;
-`;
-const VerticalScroll = _styledComponents.default.div`
-  height: 100%;
-  padding: 8px;
-  overflow-y: auto;
-  flex: 1 1 auto;
-  > :not(:first-child) {
-    margin-top: 8px;
-  }
-`;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts","./Card":"Card.tsx","./icon":"icon.tsx","./InputForm":"InputForm.tsx"}],"DeleteDialog.tsx":[function(require,module,exports) {
+},{"styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","./color":"color.ts"}],"DeleteDialog.tsx":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33710,6 +33346,7 @@ function App() {
   const [columns, setColumns] = (0, _react.useState)([{
     id: 'A',
     title: 'TODO',
+    text: '',
     cards: [{
       id: 'a',
       text: '朝食をとる🍞'
@@ -33723,6 +33360,7 @@ function App() {
   }, {
     id: 'B',
     title: 'Doing',
+    text: '',
     cards: [{
       id: 'd',
       text: '顔を洗う👐'
@@ -33733,10 +33371,12 @@ function App() {
   }, {
     id: 'C',
     title: 'Waiting',
+    text: '',
     cards: []
   }, {
     id: 'D',
     title: 'Done',
+    text: '',
     cards: [{
       id: 'f',
       text: '布団から出る (:3っ)っ -=三[＿＿]'
@@ -33778,6 +33418,14 @@ function App() {
     }));
   };
 
+  const setText = (columnID, value) => {
+    setColumns((0, _immer.default)(columns => {
+      const column = columns.find(c => c.id === columnID);
+      if (!column) return;
+      column.text = value;
+    }));
+  };
+
   const [deletingCardID, setDeletingCardID] = (0, _react.useState)(undefined);
   return _react.default.createElement(Container, null, _react.default.createElement(Header, {
     filterValue: filterValue,
@@ -33785,7 +33433,8 @@ function App() {
   }), _react.default.createElement(MainArea, null, _react.default.createElement(HorizontalScroll, null, columns.map(({
     id: columnID,
     title,
-    cards
+    cards,
+    text
   }) => _react.default.createElement(_Column.Column, {
     key: columnID,
     title: title,
@@ -33793,7 +33442,9 @@ function App() {
     cards: cards,
     onCardDragStart: cardID => setDraggingCardID(cardID),
     onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID),
-    onCardDeleteClick: cardID => setDeletingCardID(cardID)
+    onCardDeleteClick: cardID => setDeletingCardID(cardID),
+    text: text,
+    onTextChange: value => setText(columnID, value)
   })))), deletingCardID && _react.default.createElement(Overlay, {
     onClick: () => setDeletingCardID(undefined)
   }, _react.default.createElement(_DeleteDialog.DeleteDialog, {
@@ -33879,7 +33530,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54641" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49989" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
