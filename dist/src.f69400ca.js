@@ -32916,6 +32916,78 @@ function randomID() {
 
   return id;
 }
+},{}],"api.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.api = api;
+exports.APIError = exports.Endpoint = void 0;
+const Endpoint = 'http://localhost:3000/api';
+exports.Endpoint = Endpoint;
+
+async function api(key, payload) {
+  const [method, path] = key.split(' ');
+
+  if (!method || !path) {
+    throw new Error(`Unrecognized api: ${key}`);
+  }
+
+  let pathWithID = '';
+  const option = {
+    method
+  };
+
+  switch (option.method) {
+    case 'GET':
+    case 'DELETE':
+      if (payload && 'id' in payload) {
+        pathWithID = `${path}/${payload.id}`;
+      }
+
+      break;
+
+    case 'POST':
+      option.headers = {
+        'Content-Type': 'application/json'
+      };
+      option.body = JSON.stringify(payload);
+      break;
+
+    case 'PATCH':
+      if (payload && 'id' in payload) {
+        pathWithID = `${path}/${payload.id}`;
+      }
+
+      option.headers = {
+        'Content-Type': 'application/json'
+      };
+      option.body = JSON.stringify(payload);
+      break;
+  }
+
+  return fetch(`${Endpoint}${pathWithID || path}`, option).then(res => res.ok ? res.json() : res.text().then(text => {
+    throw new APIError(method, res.url, res.status, res.statusText, res.ok, res.redirected, res.type, text);
+  }));
+}
+
+class APIError extends Error {
+  constructor(method, url, status, statusText, ok, redirected, type, text) {
+    super(`${method} ${url} ${status} (${statusText})`);
+    this.method = method;
+    this.url = url;
+    this.status = status;
+    this.statusText = statusText;
+    this.ok = ok;
+    this.redirected = redirected;
+    this.type = type;
+    this.text = text;
+  }
+
+}
+
+exports.APIError = APIError;
 },{}],"color.ts":[function(require,module,exports) {
 "use strict";
 
@@ -33493,8 +33565,7 @@ function Column({
   const cards = rawCards.filter(({
     text
   }) => keywords === null || keywords === void 0 ? void 0 : keywords.every(w => text === null || text === void 0 ? void 0 : text.toLowerCase().includes(w)));
-  const totalCount = rawCards.length; // const [text, setText] = useState('')
-
+  const totalCount = rawCards.length;
   const [inputMode, setInputMode] = (0, _react.useState)(false);
 
   const toggleInput = () => setInputMode(v => !v);
@@ -33519,7 +33590,7 @@ function Column({
     onClick: toggleInput
   })), inputMode && _react.default.createElement(InputForm, {
     value: text,
-    onChange: setText,
+    onChange: onTextChange,
     onConfirm: confirmInput,
     onCancel: cancelInput
   }), filterValue && _react.default.createElement(ResultCount, null, cards.length, " results"), _react.default.createElement(VerticalScroll, null, cards.map(({
@@ -33728,6 +33799,8 @@ var _immer = _interopRequireDefault(require("immer"));
 
 var _util = require("./util");
 
+var _api = require("./api");
+
 var _Header2 = require("./Header");
 
 var _Column = require("./Column");
@@ -33785,6 +33858,9 @@ function App() {
   }]);
 
   const addCard = columnID => {
+    const column = columns.find(c => c.id === columnID);
+    if (!column) return;
+    const text = column.text;
     const cardID = (0, _util.randomID)();
     setColumns((0, _immer.default)(columns => {
       const column = columns.find(c => c.id === columnID);
@@ -33795,6 +33871,10 @@ function App() {
       });
       column.text = '';
     }));
+    (0, _api.api)('POST /v1/cards', {
+      id: cardID,
+      text
+    });
   };
 
   const [draggingCardID, setDraggingCardID] = (0, _react.useState)(undefined);
@@ -33904,7 +33984,7 @@ const Overlay = (0, _styledComponents.default)(_Overlay2.Overlay)`
   justify-content: center;
   align-items: center;
 `;
-},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","immer":"../node_modules/immer/dist/immer.esm.js","./util":"util.ts","./Header":"Header.tsx","./Column":"Column.tsx","./DeleteDialog":"DeleteDialog.tsx","./Overlay":"Overlay.tsx"}],"index.tsx":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","styled-components":"../node_modules/styled-components/dist/styled-components.browser.esm.js","immer":"../node_modules/immer/dist/immer.esm.js","./util":"util.ts","./api":"api.ts","./Header":"Header.tsx","./Column":"Column.tsx","./DeleteDialog":"DeleteDialog.tsx","./Overlay":"Overlay.tsx"}],"index.tsx":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -33946,7 +34026,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59925" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50473" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

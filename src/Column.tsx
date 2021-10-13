@@ -36,7 +36,6 @@ export function Column({
     keywords?.every(w => text?.toLowerCase().includes(w)),
   )
   const totalCount = rawCards.length
-  // const [text, setText] = useState('')
   const [inputMode, setInputMode] = useState(false)
   const toggleInput = () => setInputMode(v => !v)
   const confirmInput = () => {
@@ -67,7 +66,7 @@ export function Column({
       {inputMode && (
         <InputForm
           value={text}
-          onChange={setText}
+          onChange={onTextChange}
           onConfirm={confirmInput}
           onCancel={cancelInput}
         />
