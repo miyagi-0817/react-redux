@@ -32924,7 +32924,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.api = api;
 exports.APIError = exports.Endpoint = void 0;
-const Endpoint = 'http://localhost:3000/api';
+const Endpoint = undefined || 'http://localhost:3000/api';
 exports.Endpoint = Endpoint;
 
 async function api(key, payload) {
@@ -34026,7 +34026,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50473" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53188" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
