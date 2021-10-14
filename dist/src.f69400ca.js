@@ -33817,136 +33817,127 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && 
 
 function App() {
   const [filterValue, setFilterValue] = (0, _react.useState)('');
-  const [columns, setColumns] = (0, _react.useState)([{
-    id: 'A',
-    title: 'TODO',
-    text: '',
-    cards: [{
-      id: 'a',
-      text: '朝食をとる🍞'
-    }, {
-      id: 'b',
-      text: 'SNSをチェックする🐦'
-    }, {
-      id: 'c',
-      text: '布団に入る (:3[___]'
-    }]
-  }, {
-    id: 'B',
-    title: 'Doing',
-    text: '',
-    cards: [{
-      id: 'd',
-      text: '顔を洗う👐'
-    }, {
-      id: 'e',
-      text: '歯を磨く🦷'
-    }]
-  }, {
-    id: 'C',
-    title: 'Waiting',
-    text: '',
-    cards: []
-  }, {
-    id: 'D',
-    title: 'Done',
-    text: '',
-    cards: [{
-      id: 'f',
-      text: '布団から出る (:3っ)っ -=三[＿＿]'
-    }]
-  }]);
-
-  const addCard = columnID => {
-    const column = columns.find(c => c.id === columnID);
-    if (!column) return;
-    const text = column.text;
-    const cardID = (0, _util.randomID)();
-    setColumns((0, _immer.default)(columns => {
-      const column = columns.find(c => c.id === columnID);
-      if (!column) return;
-      column.cards.unshift({
-        id: cardID,
-        text: column.text
-      });
-      column.text = '';
-    }));
-    (0, _api.api)('POST /v1/cards', {
-      id: cardID,
-      text
-    });
-  };
-
+  const [columns, setColumns] = (0, _react.useState)([]);
   const [draggingCardID, setDraggingCardID] = (0, _react.useState)(undefined);
-
-  const deleteCard = () => {
-    const cardID = deletingCardID;
-    if (!cardID) return;
-    setDeletingCardID(undefined);
-    setColumns((0, _immer.default)(columns => {
-      const column = columns.find(col => col.cards.some(c => c.id === cardID));
-      if (!column) return;
-      column.cards = column.cards.filter(c => c.id !== cardID);
-    }));
-  };
 
   const dropCardTo = toID => {
     const fromID = draggingCardID;
     if (!fromID) return;
     setDraggingCardID(undefined);
     if (fromID === toID) return;
-    setColumns((0, _immer.default)(columns => {
-      const card = columns.flatMap(col => col.cards).find(c => c.id === fromID);
-      if (!card) return;
-      const fromColumn = columns.find(col => col.cards.some(c => c.id === fromID));
-      if (!fromColumn) return;
-      fromColumn.cards = fromColumn.cards.filter(c => c.id !== fromID);
-      const toColumn = columns.find(col => col.id === toID || col.cards.some(c => c.id === toID));
-      if (!toColumn) return;
-      let index = toColumn.cards.findIndex(c => c.id === toID);
 
-      if (index < 0) {
-        index = toColumn.cards.length;
-      }
-
-      toColumn.cards.splice(index, 0, card);
-    }));
-  };
-
-  const setText = (columnID, value) => {
-    setColumns((0, _immer.default)(columns => {
+    const addCard = columnID => {
       const column = columns.find(c => c.id === columnID);
       if (!column) return;
-      column.text = value;
-    }));
-  };
+      const text = column.text;
+      const cardID = (0, _util.randomID)();
+      setColumns((0, _immer.default)(columns => {
+        var _a;
 
-  const [deletingCardID, setDeletingCardID] = (0, _react.useState)(undefined);
-  return _react.default.createElement(Container, null, _react.default.createElement(Header, {
-    filterValue: filterValue,
-    onFilterChange: setFilterValue
-  }), _react.default.createElement(MainArea, null, _react.default.createElement(HorizontalScroll, null, columns.map(({
-    id: columnID,
-    title,
-    cards,
-    text
-  }) => _react.default.createElement(_Column.Column, {
-    key: columnID,
-    title: title,
-    filterValue: filterValue,
-    cards: cards,
-    onCardDragStart: cardID => setDraggingCardID(cardID),
-    onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID),
-    onCardDeleteClick: cardID => setDeletingCardID(cardID),
-    text: text,
-    onTextChange: value => setText(columnID, value),
-    onTextConfirm: () => addCard(columnID)
-  })))), deletingCardID && _react.default.createElement(Overlay, {
-    onClick: () => setDeletingCardID(undefined)
-  }, _react.default.createElement(_DeleteDialog.DeleteDialog, {
-    onConfirm: deleteCard,
-    onCancel: () => setDeletingCardID(undefined)
-  })));
+        const column = columns.find(c => c.id === columnID);
+        if (!column) return;
+        (_a = column.cards) === null || _a === void 0 ? void 0 : _a.unshift({
+          id: cardID,
+          text: column.text
+        });
+        column.text = '';
+      }));
+      (0, _api.api)('POST /v1/cards', {
+        id: cardID,
+        text
+      });
+    }; // const [draggingCardID, setDraggingCardID] = useState<string | undefined>(
+    //   undefined,
+    // )
+
+
+    const deleteCard = () => {
+      const cardID = deletingCardID;
+      if (!cardID) return;
+      setDeletingCardID(undefined);
+      setColumns((0, _immer.default)(columns => {
+        var _a;
+
+        const column = columns.find(col => {
+          var _a;
+
+          return (_a = col.cards) === null || _a === void 0 ? void 0 : _a.some(c => c.id === cardID);
+        });
+        if (!column) return;
+        column.cards = (_a = column.cards) === null || _a === void 0 ? void 0 : _a.filter(c => c.id !== cardID);
+      }));
+    };
+
+    const dropCardTo = toID => {
+      const fromID = draggingCardID;
+      if (!fromID) return;
+      setDraggingCardID(undefined);
+      if (fromID === toID) return;
+      setColumns((0, _immer.default)(columns => {
+        const card = columns.flatMap(col => {
+          var _a;
+
+          return (_a = col.cards) !== null && _a !== void 0 ? _a : [];
+        }).find(c => c.id === fromID);
+        if (!card) return;
+        const fromColumn = columns.find(col => {
+          var _a;
+
+          return (_a = col.cards) === null || _a === void 0 ? void 0 : _a.some(c => c.id === fromID);
+        });
+        if (!(fromColumn === null || fromColumn === void 0 ? void 0 : fromColumn.cards)) return;
+        fromColumn.cards = fromColumn.cards.filter(c => c.id !== fromID);
+        const toColumn = columns.find(col => {
+          var _a;
+
+          return col.id === toID || ((_a = col.cards) === null || _a === void 0 ? void 0 : _a.some(c => c.id === toID));
+        });
+        if (!(toColumn === null || toColumn === void 0 ? void 0 : toColumn.cards)) return;
+        let index = toColumn.cards.findIndex(c => c.id === toID);
+
+        if (index < 0) {
+          index = toColumn.cards.length;
+        }
+
+        toColumn.cards.splice(index, 0, card);
+      }));
+    };
+
+    const setText = (columnID, value) => {
+      setColumns((0, _immer.default)(columns => {
+        const column = columns.find(c => c.id === columnID);
+        if (!column) return;
+        column.text = value;
+      }));
+    };
+
+    const [deletingCardID, setDeletingCardID] = (0, _react.useState)(undefined);
+    return _react.default.createElement(Container, null, _react.default.createElement(Header, {
+      filterValue: filterValue,
+      onFilterChange: setFilterValue
+    }), _react.default.createElement(MainArea, null, _react.default.createElement(HorizontalScroll, null, columns.map(({
+      id: columnID,
+      title,
+      cards,
+      text
+    }) => _react.default.createElement(_Column.Column, {
+      key: columnID,
+      title: title,
+      filterValue: filterValue,
+      cards: cards,
+      onCardDragStart: cardID => setDraggingCardID(cardID),
+      onCardDrop: entered => dropCardTo(entered !== null && entered !== void 0 ? entered : columnID),
+      onCardDeleteClick: cardID => setDeletingCardID(cardID),
+      text: text,
+      onTextChange: value => setText(columnID, value),
+      onTextConfirm: () => addCard(columnID)
+    })))), deletingCardID && _react.default.createElement(Overlay, {
+      onClick: () => setDeletingCardID(undefined)
+    }, _react.default.createElement(_DeleteDialog.DeleteDialog, {
+      onConfirm: deleteCard,
+      onCancel: () => setDeletingCardID(undefined)
+    })));
+  };
 }
 
 const Container = _styledComponents.default.div`
@@ -34026,7 +34017,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53188" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63682" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
